@@ -1,17 +1,38 @@
-# KASPA EXPLORER
+# Stokes Explorer
 
-This is the source code for Kaspa Explorer [https://explorer.kaspa.org](https://explorer.kaspa.org) written in JS with React.JS library.
+This is the Stokes Network block explorer UI.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Status
+
+This project is a work-in-progress while we prepare for mainnet launch.
 
 ## Development
 
-For developing this you need Node.JS and just npm install.
+Prerequisites:
 
-## Any ideas?
+- Node.js
+- A running `stokes-server` instance
 
-Do you have any new ideas, wishes or bugs? Contact @lAmeR^#7173 at Discord.
+Install:
 
-## DONATION ♥
+```shell
+npm install
+```
 
-Please consider a donation for my work: [kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73](https://explorer.kaspa.org/addresses/kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73)
+Configure environment:
+
+- Copy `.env.example` to `.env`
+- Update the URLs if your `stokes-server` is not running on `127.0.0.1:8000`
+
+Run:
+
+```shell
+npm start
+```
+
+### API expectations
+
+The explorer expects:
+
+- REST API at `REACT_APP_API_SERVER` (example: `http://127.0.0.1:8000`)
+- Socket.IO at `WS_SERVER` using path `/ws/socket.io`
