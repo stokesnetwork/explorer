@@ -36,12 +36,3 @@ code {
     }
 }
 
-/* The element to apply the animation to */
-.shake {
-    width: 100px;
-    height: 100px;
-    animation-name: example;
-    animation-duration: 3s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}

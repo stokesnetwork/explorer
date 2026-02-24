@@ -9,8 +9,8 @@ import {
   getHashrateMax,
   getKaspadInfo,
 } from "../kaspa-api-client";
-import { numberWithCommas } from "../helper";
-import { BPS, KASPA_UNIT } from "../explorer_constants";
+import { numberWithCommas } from "../helper.ts";
+import { BPS, STOKES_UNIT } from "../explorer_constants";
 import MempoolContext from "./MempoolContext";
 
 const BlockDAGBox = () => {
@@ -229,6 +229,20 @@ const BlockDAGBox = () => {
   return (
     <>
       <div className="cardBox mx-0">
+        <div className="cardHeroBackground" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            viewBox="0 0 622 705"
+            fill="none"
+            className="hero_light"
+          >
+            <path
+              d="M311 0L621.037 704.25H0.962891L311 0Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
         <table style={{ fontSize: "1rem" }}>
           <tr>
             <td
@@ -248,7 +262,7 @@ const BlockDAGBox = () => {
           <tr>
             <td className="cardBoxElement">Network name</td>
             <td className="pt-1 text-nowrap">
-              KASPA {process.env.REACT_APP_NETWORK.toUpperCase()}
+              Stokes
             </td>
           </tr>
           <tr>
@@ -297,7 +311,7 @@ const BlockDAGBox = () => {
               {feerate > 300
                 ? ((feerate * 3165) / 100000000).toFixed(2)
                 : (feerate * 3165) / 100000000}{" "}
-              {KASPA_UNIT}
+              {STOKES_UNIT}
             </td>
           </tr>
         </table>

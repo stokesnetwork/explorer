@@ -35,7 +35,7 @@ import { getBlock } from "./kaspa-api-client";
 import {
   ADDRESS_PREFIX,
   API_SERVER,
-  KASPA_UNIT,
+  STOKES_UNIT,
   SOCKET_SERVER,
   SUFFIX,
 } from "./explorer_constants";
@@ -102,6 +102,11 @@ function App() {
   };
 
   const updatePrice = () => {
+    if (process.env.REACT_APP_NETWORK?.includes("testnet")) {
+      setPrice(0);
+      setMarketData("");
+      return;
+    }
     fetch(`${API_SERVER}/info/market-data`, {
       headers: { "Cache-Control": "no-cache" },
     })
@@ -188,160 +193,117 @@ function App() {
       <PriceContext.Provider value={{ price, marketData }}>
         <BlueScoreContext.Provider value={{ blueScore }}>
           <MempoolContext.Provider value={{ mempool }}>
-            <div className="big-page">
-              <Navbar
-                expand="md"
-                bg="dark"
-                variant="dark"
-                sticky="top"
-                id="navbar_top"
-                className={location.pathname == "/" ? "" : "fixed-top"}
-              >
-                <Container id="navbar-container" fluid>
-                  <div className="navbar-title">
-                    <Navbar.Brand>
-                      <Link to="/">
-                        <div className="navbar-brand">
-                          <img
-                            className="shake"
-                            src="/k-icon-glow.png"
-                            style={{
-                              marginRight: ".5rem",
-                              width: "4rem",
-                              height: "4rem",
-                            }}
-                          />
-                          <div className="navbar-brand-text text-start">
-                            KASPA
-                            <br />
-                            EXPLORER{SUFFIX}
-                          </div>
-                        </div>
-                      </Link>
-                    </Navbar.Brand>
-                  </div>
-
-                  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                  <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                      <Nav.Item>
-                        <NavLink
-                          className="nav-link fs-5"
-                          onClick={closeMenuIfNeeded}
-                          to={`/`}
-                        >
-                          Dashboard
-                        </NavLink>
-                      </Nav.Item>
-                      <Nav.Item>
-                        <NavLink
-                          className="nav-link fs-5"
-                          onClick={closeMenuIfNeeded}
-                          to={`/blocks`}
-                        >
-                          Blocks
-                        </NavLink>
-                      </Nav.Item>
-                      <Nav.Item>
-                        <NavLink
-                          className="nav-link fs-5"
-                          onClick={closeMenuIfNeeded}
-                          to={`/txs`}
-                        >
-                          Transactions
-                        </NavLink>
-                      </Nav.Item>
-                    </Nav>
-                    <div className="ms-auto navbar-price">
-                      ${price}{" "}
-                      <span className="text-light">/ {KASPA_UNIT}</span>
-                    </div>
-                  </Navbar.Collapse>
-                </Container>
-              </Navbar>
-              <div className="search-row">
-                <Container
-                  className="webpage"
-                  hidden={location.pathname == "/"}
+            <div className="appShell">
+              <div className="appHeader">
+                <Navbar
+                  expand="md"
+                  bg="dark"
+                  variant="dark"
+                  sticky="top"
+                  id="navbar_top"
+                  className={location.pathname == "/" ? "" : "fixed-top"}
                 >
-                  <Row>
-                    <Col xs={12}>
-                      <Form onSubmit={search} className="">
-                        <InputGroup className="mt-4 mb-4 search-box-group">
-                          <Form.Control
-                            className="d-inline-block bg-light text-dark shadow-none"
-                            name="searchbox"
-                            id="search-box-high"
-                            type="text"
-                            placeholder={`Search for ${ADDRESS_PREFIX}address or block`}
-                          />
-                          <Button
-                            type="submit"
-                            className="shadow-none searchButton"
-                            variant="dark"
+                  <Container id="navbar-container" fluid>
+                    <div className="navbar-title">
+                      <Navbar.Brand>
+                        <Link to="/">
+                          <div className="navbar-brand">
+                            <img
+                              src="/stokes-logo.png"
+                            />
+                            <div className="navbar-brand-text">
+                              STKS
+                            </div>
+                          </div>
+                        </Link>
+                      </Navbar.Brand>
+                    </div>
+
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+                    {location.pathname !== "/" ? (
+                      <div className="navbarHeaderSearch">
+                        <Form onSubmit={search} className="navbarHeaderSearchForm">
+                          <InputGroup className="search-box-group navbarHeaderSearchGroup">
+                            <Form.Control
+                              className="d-inline-block bg-light text-dark shadow-none"
+                              name="searchbox"
+                              id="search-box-high"
+                              type="text"
+                              placeholder={`Search for ${ADDRESS_PREFIX}address or block`}
+                            />
+                            <Button
+                              type="submit"
+                              className="shadow-none searchButton"
+                              variant="dark"
+                            >
+                              <i className="fa fa-search" />
+                            </Button>
+                          </InputGroup>
+                        </Form>
+                      </div>
+                    ) : null}
+                    <Navbar.Collapse id="responsive-navbar-nav">
+                      <Nav className="ms-auto">
+                        <Nav.Item>
+                          <NavLink
+                            className="nav-link fs-5"
+                            onClick={closeMenuIfNeeded}
+                            to={`/blocks`}
                           >
-                            <i className="fa fa-search" />
-                          </Button>
-                        </InputGroup>
-                      </Form>
-                    </Col>
-                  </Row>
-                </Container>
+                            Blocks
+                          </NavLink>
+                        </Nav.Item>
+                        {/* <Nav.Item>
+                          <NavLink
+                            className="nav-link fs-5"
+                            onClick={closeMenuIfNeeded}
+                            to={`/txs`}
+                          >
+                            Transactions
+                          </NavLink>
+                        </Nav.Item> */}
+                      </Nav>
+                    </Navbar.Collapse>
+                  </Container>
+                </Navbar>
               </div>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/blocks" element={<BlocksPage />} />
-                <Route path="/blocks/:id" element={<BlockInfo />} />
-                <Route path="/blocks/:id/:txview" element={<BlockInfo />} />
-                <Route path="/addresses/:addr" element={<AddressInfoPage />} />
-                <Route path="/txs" element={<TxPage />} />
-                <Route path="/txs/:id" element={<TransactionInfo />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+
+              <div className="appMain">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/blocks" element={<BlocksPage />} />
+                  <Route path="/blocks/:id" element={<BlockInfo />} />
+                  <Route path="/blocks/:id/:txview" element={<BlockInfo />} />
+                  <Route path="/addresses/:addr" element={<AddressInfoPage />} />
+                  <Route path="/txs" element={<TxPage />} />
+                  <Route path="/txs/:id" element={<TransactionInfo />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
               {/* <div className="alpha">ALPHA VERSION</div> */}
-            </div>
-            <div className="text-light footerfull d-flex flex-row justify-content-center px-0">
+              <div className="text-light footerfull appFooter">
               <Container
-                className="footer webpage px-sm-5 py-3 text-center madewith"
+                className="footer px-sm-5 py-3 text-center"
                 fluid
               >
                 <Row className="d-none d-sm-block">
                   <Col>
-                    Made with{" "}
-                    <font className="fs-5" color="red">
-                      ♥
-                    </font>{" "}
-                    by Kaspa developers
                     <span className="ms-3">
-                      <OverlayTrigger
-                        placement="left"
-                        overlay={<Tooltip id="github">Source code</Tooltip>}
-                      >
+                      
                         <a
                           className="blockinfo-link"
-                          href="https://github.com/lAmeR1/kaspa-explorer"
+                          href="https://github.com/stokesnetwork/"
                           target="_blank"
                         >
                           <FaGithub size="1.3rem" />
                         </a>
-                      </OverlayTrigger>
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={
-                          <Tooltip id="donate">Donation address</Tooltip>
-                        }
-                      >
                         <Link
                           className="blockinfo-link ms-3"
                           to="/addresses/kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73"
                         >
                           <BiDonateHeart size="1.3rem" />
                         </Link>
-                      </OverlayTrigger>
-                      <OverlayTrigger
-                        placement="right"
-                        overlay={<Tooltip id="github">REST-API server</Tooltip>}
-                      >
                         <a
                           className="blockinfo-link ms-3"
                           href="https://api.kaspa.org/"
@@ -349,21 +311,7 @@ function App() {
                         >
                           <SiFastapi size="1.3rem" />
                         </a>
-                      </OverlayTrigger>
                     </span>
-                    <span className="px-3 build">|</span>
-                    <span className="build">
-                      Build version: {buildVersion.substring(0, 8)}
-                    </span>
-                  </Col>
-                </Row>
-                <Row className="d-sm-none px-0">
-                  <Col className="px-0">
-                    Made with{" "}
-                    <font className="fs-5" color="red">
-                      ♥
-                    </font>{" "}
-                    by Kaspa developers
                   </Col>
                 </Row>
                 <Row className="py-1 d-sm-none px-0">
@@ -409,15 +357,10 @@ function App() {
                     </span>
                   </Col>
                 </Row>
-                <Row className="d-sm-none px-0">
-                  <Col>
-                    <span className="build">
-                      Build version: {buildVersion.substring(0, 8)}
-                    </span>
-                  </Col>
-                </Row>
               </Container>
             </div>
+            </div>
+
           </MempoolContext.Provider>
         </BlueScoreContext.Provider>
       </PriceContext.Provider>
